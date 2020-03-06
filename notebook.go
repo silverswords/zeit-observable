@@ -6,6 +6,8 @@ import (
 	"net/http"
 )
 
+var headerKeys = []string{"content-type", "Cache-Control", "Access-Control-Allow-Origin"}
+
 // Notebook -
 func Notebook(w http.ResponseWriter, r *http.Request) {
 	url := r.URL.RequestURI()
@@ -23,7 +25,12 @@ func Notebook(w http.ResponseWriter, r *http.Request) {
 	}
 	defer resp.Body.Close()
 
+	header := resp.Header
 	body, _ := ioutil.ReadAll(resp.Body)
-	w.Header().Set("content-type", "application/javascript; charset=utf-8")
+
+	for _, key := range headerKeys {
+		w.Header().Set(key, header.Get(key))
+	}
+
 	w.Write(body)
 }
