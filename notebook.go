@@ -29,7 +29,11 @@ func Notebook(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	for _, key := range headerKeys {
-		w.Header().Set(key, header.Get(key))
+		if len(header.Get(key)) != 0 {
+			w.Header().Set(key, header.Get(key))
+		} else {
+			continue
+		}
 	}
 
 	w.Write(body)
